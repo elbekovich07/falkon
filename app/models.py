@@ -37,28 +37,24 @@ class Product(BaseModel):
     quantity = models.PositiveIntegerField(default=1)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products', null=True, blank=True)
     is_active = models.BooleanField(default=True)
+    image = models.ImageField(upload_to='products/', null=True, blank=True)
+
 
     @property
     def discounted_price(self):
-        if self.discount > 0:
-            self.price = self.price * Decimal(1 - self.discount / 100)
-        return Decimal(f'{self.price}').quantize(Decimal('0.00'))
+        discounted = self.price * Decimal(1 - self.discount / 100)
+        return discounted.quantize(Decimal('0.00'))
 
     @property
     def comment_rating(self):
-        products = self.comments.aggregate(product_avg_rating=Avg('rating'))
-        rating = products['product_avg_rating']
-
-        if rating is not None:
-            try:
-                return Decimal(str(rating)).quantize(Decimal('0.000'))
-            except InvalidOperation:
-                return Decimal('0.000')
-        return Decimal('0.000')
+        rating = self.comments.aggregate(avg_rating=Avg('rating'))['avg_rating'] or 0
+        return Decimal(rating).quantize(Decimal('0.000'))
 
     @property
     def get_absolute_url(self):
-        return self.image.url
+        first_image = self.images.first()
+        return first_image.image.url if first_image else None
+
 
     def __str__(self):
         return self.name
