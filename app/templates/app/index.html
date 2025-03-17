@@ -248,7 +248,7 @@
                                                    data-bs-toggle="collapse" aria-expanded="false"
                                                    aria-controls="e-commerce">
                             <div class="d-flex align-items-center"><span class="nav-link-icon"><span
-                                    class="fas fa-shopping-cart"></span></span><span class="nav-link-text ps-1">E commerce</span>
+                                    class="fas fa-appping-cart"></span></span><span class="nav-link-text ps-1">E commerce</span>
                             </div>
                         </a>
                             <ul class="nav collapse false" id="e-commerce">
@@ -329,7 +329,7 @@
                                 </a>
                                     <!-- more inner pages-->
                                 </li>
-                                <li class="nav-item"><a class="nav-link" href="app/e-commerce/shopping-cart.html"
+                                <li class="nav-item"><a class="nav-link" href="app/e-commerce/appping-cart.html"
                                                         aria-expanded="false">
                                     <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Shopping cart</span>
                                     </div>
@@ -2119,8 +2119,7 @@
                 </ul>
             </nav>
 
-            <div class="card mt-2 mb-2
-    ">
+            <div class="card mt-2 mb-2">
                 <div class="card-header bg-light">
                     <div class="row align-items-center">
                         <div class="col">
@@ -2132,61 +2131,20 @@
                 </div>
                 <div class="card-body bg-light px-1 py-0">
                     <div class="row g-0 text-center fs--1">
-                        <div class="col-4 col-md-4 col-lg-3 col-xx1-2 mb-1">
-                            <div class="bg-white dark__bg-1100 p-1 h-100"><a href="./pages/user/profile.html"><img
-                                    class="img-thumbnail img-fluid  mb-3 shadow-sm"
-                                    src="{% static 'app/./assets' %}/img/team/1.jpg" alt="" width="100"></a>
-                                <h6 class="mb-1"><a href="./pages/user/profile.html">Uy uchun</a>
-                                </h6>
-                                <p class="fs--2 mb-1"></p>
+                        {% for category in categories %}
+                            <div class="col-4 col-md-4 col-lg-3 col-xx1-2 mb-1">
+                                <div class="bg-white dark__bg-1100 p-1 h-100"><a href="product_list.html">
+                                    <img
+                                        class="img-thumbnail img-fluid  mb-3 shadow-sm"
+                                        src="{{ category.image.url }}"
+                                        width="100"></a>
+                                    <h6 class="mb-1"><a href="product_list.html">{{ category.title }}</a>
+                                    </h6>
+                                    <p class="fs--2 mb-1"></p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-4 col-md-4 col-lg-3 col-xx1-2 mb-1">
-                            <div class="bg-white dark__bg-1100 p-1 h-100"><a href="./pages/user/profile.html"><img
-                                    class="img-thumbnail img-fluid  mb-3 shadow-sm"
-                                    src="{% static 'app/./assets' %}/img/team/1.jpg" alt="" width="100"></a>
-                                <h6 class="mb-1"><a href="./pages/user/profile.html">Bolalar uchun</a>
-                                </h6>
-                                <p class="fs--2 mb-1"></p>
-                            </div>
-                        </div>
-                        <div class="col-4 col-md-4 col-lg-3 col-xx1-2 mb-1">
-                            <div class="bg-white dark__bg-1100 p-1 h-100"><a href="./pages/user/profile.html"><img
-                                    class="img-thumbnail img-fluid  mb-3 shadow-sm"
-                                    src="{% static 'app/./assets' %}/img/team/1.jpg" alt="" width="100"></a>
-                                <h6 class="mb-1"><a href="./pages/user/profile.html">Sovga</a>
-                                </h6>
-                                <p class="fs--2 mb-1"></p>
-                            </div>
-                        </div>
-                        <div class="col-4 col-md-4 col-lg-3 col-xx1-2 mb-1">
-                            <div class="bg-white dark__bg-1100 p-1 h-100"><a href="./pages/user/profile.html"><img
-                                    class="img-thumbnail img-fluid  mb-3 shadow-sm"
-                                    src="{% static 'app/./assets' %}/img/team/1.jpg" alt="" width="100"></a>
-                                <h6 class="mb-1"><a href="./pages/user/profile.html">Ayollar</a>
-                                </h6>
-                                <p class="fs--2 mb-1"></p>
-                            </div>
-                        </div>
+                        {% endfor %}
 
-                        <div class="col-4 col-md-4 col-lg-3 col-xx1-2 mb-1">
-                            <div class="bg-white dark__bg-1100 p-1 h-100"><a href="./pages/user/profile.html"><img
-                                    class="img-thumbnail img-fluid  mb-3 shadow-sm"
-                                    src="{% static 'app/./assets' %}/img/team/1.jpg" alt="" width="100"></a>
-                                <h6 class="mb-1"><a href="./pages/user/profile.html">Fitnes</a>
-                                </h6>
-                                <p class="fs--2 mb-1"></p>
-                            </div>
-                        </div>
-                        <div class="col-4 col-md-4 col-lg-3 col-xx1-2 mb-1">
-                            <div class="bg-white dark__bg-1100 p-1 h-100"><a href="./pages/user/profile.html"><img
-                                    class="img-thumbnail img-fluid  mb-3 shadow-sm"
-                                    src="{% static 'app/assets/img/team/1.jpg' %}" alt="" width="100"></a>
-                                <h6 class="mb-1"><a href="{% url 'product-list' %}">Davolovchi mahsulotlar</a>
-                                </h6>
-                                <p class="fs--2 mb-1"></p>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -2200,7 +2158,7 @@
                                     <div class="position-relative rounded-top overflow-hidden"><a class="d-block"
                                                                                                   href="./app/e-commerce/product/product-details.html"><img
                                             class="img-fluid rounded-top"
-                                            src="{% static 'app/./assets/img/products/2.jpg' %}alt="></a>
+                                            src="{% static 'app/./assets' %}/img/products/2.jpg" alt=""></a>
                                     </div>
                                     <div class="p-2">
                                         <h5 class="fs-0"><a class="text-dark"

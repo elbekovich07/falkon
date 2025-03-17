@@ -10,7 +10,6 @@ from phonenumber_field.modelfields import PhoneNumberField
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
-    my_order = models.PositiveIntegerField(null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -18,6 +17,7 @@ class BaseModel(models.Model):
 
 class Category(BaseModel):
     title = models.CharField(max_length=200, unique=True)
+    image = models.ImageField(null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -26,7 +26,6 @@ class Category(BaseModel):
         db_table = 'category'
         verbose_name = 'category'
         verbose_name_plural = 'Categories'
-        ordering = ['-id']
 
 
 class Product(BaseModel):
@@ -37,7 +36,6 @@ class Product(BaseModel):
     quantity = models.PositiveIntegerField(default=1)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products', null=True, blank=True)
     is_active = models.BooleanField(default=True)
-    image = models.ImageField(upload_to='products/', null=True, blank=True)
 
 
     @property
@@ -61,15 +59,13 @@ class Product(BaseModel):
 
     class Meta:
         db_table = 'product'
-        ordering = ['my_order']
 
 class ProductImage(BaseModel):
+    image = models.ImageField(upload_to='products/images/')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='images/')
 
     def __str__(self):
-        return f"Image for {self.product.name}"
-
+        return f'{self.product.name} {self.image.url}'
 
 
 class Comment(BaseModel):
@@ -92,11 +88,3 @@ class Comment(BaseModel):
         return f'{self.email} => {self.rating} => {self.product.name}'
 
 
-class Order(BaseModel):
-    full_name = models.CharField(max_length=100, null=True, blank=True)
-    phone = PhoneNumberField(region='UZ')
-    quantity = models.PositiveIntegerField(default=1)
-    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='orders')
-
-    def __str__(self):
-        return f'{self.phone} => {self.product.name}'

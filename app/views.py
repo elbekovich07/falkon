@@ -6,24 +6,33 @@ from .models import Category, Product
 
 
 # Create your views here.
-def index(request):
+
+
+def index(request, category_id=None):
     categories = Category.objects.all()
-    products = Product.objects.filter(is_active=True)[:10]
-    return render(request, 'app/index.html', {'categories': categories, 'products': products})
+    products = Product.objects.all()
+    if category_id:
+        products = Product.objects.filter(category_id=category_id)
+        context = {
+            'categories': categories,
+            'products': products,
+        }
+        return render(request, 'app/product_list.html', context)
+    context = {'categories': categories}
+    return render(request, 'app/index.html', context)
 
 
-def product_list(request, category_id=None):
+def products_of_category(request, category_id=None):
     if category_id:
         category = get_object_or_404(Category, id=category_id)
-        products = Product.objects.filter(category=category, is_active=True)
-    else:
-        products = Product.objects.filter(is_active=True)
-
-    return render(request, 'app/product_list.html', {'products': products})
-
-
-def product_detail(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-
-    return render(request, 'app/product.html', {'product': product})
-
+        products = Product.objects.filter(category=category)
+        context = {
+            'products': products,
+        }
+        return render(request, 'app/product_list.html', context)
+#
+#
+# def product_detail(request, pk):
+#     product = get_object_or_404(Product, pk=pk)
+#
+#     return render(request, 'app/product.html', {'product': product})
