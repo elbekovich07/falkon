@@ -1,90 +1,44 @@
-from decimal import Decimal, InvalidOperation
-
 from django.db import models
-from django.db.models import Avg
-from phonenumber_field.modelfields import PhoneNumberField
+from decimal import Decimal
 
 
 # Create your models here.
 
-class BaseModel(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
-    class Meta:
-        abstract = True
-
-
-class Category(BaseModel):
+class Category(models.Model):
     title = models.CharField(max_length=200, unique=True)
-    image = models.ImageField(null=True, blank=True)
+    image = models.ImageField(upload_to='category/images/')
 
     def __str__(self):
         return self.title
 
     class Meta:
-        db_table = 'category'
-        verbose_name = 'category'
-        verbose_name_plural = 'Categories'
+        verbose_name_plural = "Categories"
 
 
-class Product(BaseModel):
+class Product(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(null=True, blank=True)
     price = models.DecimalField(max_digits=14, decimal_places=2)
     discount = models.PositiveIntegerField(default=0)
     quantity = models.PositiveIntegerField(default=1)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products', null=True, blank=True)
-    is_active = models.BooleanField(default=True)
-
+    category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     @property
     def discounted_price(self):
-        discounted = self.price * Decimal(1 - self.discount / 100)
-        return discounted.quantize(Decimal('0.00'))
-
-    @property
-    def comment_rating(self):
-        rating = self.comments.aggregate(avg_rating=Avg('rating'))['avg_rating'] or 0
-        return Decimal(rating).quantize(Decimal('0.000'))
-
-    @property
-    def get_absolute_url(self):
-        first_image = self.images.first()
-        return first_image.image.url if first_image else None
+        if self.discount > 0:
+            self.price = self.price * Decimal(1 - self.discount / 100)
+        return Decimal(f'{self.price}').quantize(Decimal('0.00'))
 
 
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        db_table = 'product'
-
-class ProductImage(BaseModel):
-    image = models.ImageField(upload_to='products/images/')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
+class Images(models.Model):
+    image = models.ImageField(upload_to='product/images/')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images', null=True, blank=True)
 
     def __str__(self):
         return f'{self.product.name} {self.image.url}'
 
-
-class Comment(BaseModel):
-    class RatingChoice(models.IntegerChoices):
-        ONE = 1
-        TWO = 2
-        THREE = 3
-        FOUR = 4
-        FIVE = 5
-
-    full_name = models.CharField(max_length=100, null=True, blank=True)
-    email = models.EmailField()
-    content = models.TextField()
-    rating = models.PositiveIntegerField(choices=RatingChoice.choices, default=RatingChoice.ONE.value)
-    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='comments')
-    is_private = models.BooleanField(default=False)
-    is_approved = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f'{self.email} => {self.rating} => {self.product.name}'
-
-
+    class Meta:
+        verbose_name_plural = "Images"

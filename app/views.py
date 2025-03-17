@@ -4,6 +4,8 @@ from .forms import CategoryModelForm
 
 from .models import Category, Product
 
+from django.core.paginator import Paginator
+
 
 # Create your views here.
 
@@ -11,28 +13,22 @@ from .models import Category, Product
 def index(request, category_id=None):
     categories = Category.objects.all()
     products = Product.objects.all()
+
     if category_id:
         products = Product.objects.filter(category_id=category_id)
+
+        paginator = Paginator(products, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
         context = {
             'categories': categories,
-            'products': products,
+            'products': page_obj,
         }
-        return render(request, 'app/product_list.html', context)
+        return render(request, 'app/product-list.html', context)
     context = {'categories': categories}
     return render(request, 'app/index.html', context)
 
 
-def products_of_category(request, category_id=None):
-    if category_id:
-        category = get_object_or_404(Category, id=category_id)
-        products = Product.objects.filter(category=category)
-        context = {
-            'products': products,
-        }
-        return render(request, 'app/product_list.html', context)
-#
-#
-# def product_detail(request, pk):
-#     product = get_object_or_404(Product, pk=pk)
-#
-#     return render(request, 'app/product.html', {'product': product})
+def customers_view(request):
+    return render(request, 'app/customers.html')
