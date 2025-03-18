@@ -31,4 +31,4 @@ def index(request, category_id=None):
 
 
 def customers_view(request):
-    return render(request, 'app/customers.html')
+    return render(request, 'users/customers.html')
