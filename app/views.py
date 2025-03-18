@@ -1,10 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 
-from .forms import CategoryModelForm
-
-from .models import Category, Product
-
-from django.core.paginator import Paginator
+from app.forms import CustomerForm
+from app.models import Category, Product, Customer
 
 
 # Create your views here.
@@ -13,22 +10,52 @@ from django.core.paginator import Paginator
 def index(request, category_id=None):
     categories = Category.objects.all()
     products = Product.objects.all()
-
     if category_id:
-        products = Product.objects.filter(category_id=category_id)
-
-        paginator = Paginator(products, 10)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-
-        context = {
-            'categories': categories,
-            'products': page_obj,
-        }
+        products = Product.objects.filter(category=category_id)
+        context = {'products': products}
         return render(request, 'app/product-list.html', context)
-    context = {'categories': categories}
+    context = {'categories': categories, 'products': products}
     return render(request, 'app/index.html', context)
 
 
-def customers_view(request):
-    return render(request, 'users/customers.html')
+def product_detail(request, product_id):
+    product = Product.objects.get(id=product_id)
+    context = {'product': product}
+    return render(request, 'app/product-detail.html', context)
+
+
+def customer_list(request):
+    customers = Customer.objects.all()
+    return render(request, 'customers.html', {'customers': customers})
+
+def customer_detail(request, pk):
+    customer = get_object_or_404(Customer, pk=pk)
+    return render(request, 'customer_detail.html', {'customer': customer})
+
+def customer_create(request):
+    if request.method == "POST":
+        form = CustomerForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('customer_list')
+    else:
+        form = CustomerForm()
+    return render(request, 'customer_form.html', {'form': form})
+
+def customer_update(request, pk):
+    customer = get_object_or_404(Customer, pk=pk)
+    if request.method == "POST":
+        form = CustomerForm(request.POST, instance=customer)
+        if form.is_valid():
+            form.save()
+            return redirect('customer_list')
+    else:
+        form = CustomerForm(instance=customer)
+    return render(request, 'customer_form.html', {'form': form})
+
+def customer_delete(request, pk):
+    customer = get_object_or_404(Customer, pk=pk)
+    if request.method == "POST":
+        customer.delete()
+        return redirect('customer_list')
+    return render(request, 'customer_confirm_delete.html', {'customer': customer})

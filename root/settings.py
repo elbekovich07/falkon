@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app.apps.AppConfig',
-    'users.apps.UsersConfig',
     'phonenumber_field',
     'import_export',
     'adminsortable2',
@@ -146,5 +145,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'shop/media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = "users.CustomUser"
+
 

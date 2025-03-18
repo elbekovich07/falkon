@@ -1,6 +1,6 @@
 from django import forms
 
-from app.models import Product, Category
+from app.models import Product, Category, Customer
 
 
 class ProductModelForm(forms.ModelForm):
@@ -19,3 +19,9 @@ class CategoryModelForm(forms.ModelForm):
     class Meta:
         model = Category
         exclude = ['title']
+
+
+class CustomerForm(forms.ModelForm):
+    class Meta:
+        model = Customer
+        fields = ['name', 'email', 'phone', 'Billing_Address']
