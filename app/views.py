@@ -24,13 +24,14 @@ def product_detail(request, product_id):
     return render(request, 'app/product-detail.html', context)
 
 
-def customer_list(request):
-    customers = Customer.objects.all()
-    return render(request, 'customers.html', {'customers': customers})
+def customer_view(request):
+    customer = Customer.objects.all()
+    return render(request, 'app/customers.html',{'customers': customer})
+
 
 def customer_detail(request, pk):
     customer = get_object_or_404(Customer, pk=pk)
-    return render(request, 'customer_detail.html', {'customer': customer})
+    return render(request, 'app/customers.html', {'customer': customer})
 
 def customer_create(request):
     if request.method == "POST":
@@ -40,7 +41,7 @@ def customer_create(request):
             return redirect('customer_list')
     else:
         form = CustomerForm()
-    return render(request, 'customer_form.html', {'form': form})
+    return render(request, 'app/customers.html', {'form': form})
 
 def customer_update(request, pk):
     customer = get_object_or_404(Customer, pk=pk)
@@ -51,11 +52,11 @@ def customer_update(request, pk):
             return redirect('customer_list')
     else:
         form = CustomerForm(instance=customer)
-    return render(request, 'customer_form.html', {'form': form})
+    return render(request, 'app/customers.html', {'form': form})
 
 def customer_delete(request, pk):
     customer = get_object_or_404(Customer, pk=pk)
     if request.method == "POST":
         customer.delete()
         return redirect('customer_list')
-    return render(request, 'customer_confirm_delete.html', {'customer': customer})
+    return render(request, 'app/customers.html', {'customer': customer})
