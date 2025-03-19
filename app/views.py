@@ -1,62 +1,65 @@
-from django.shortcuts import render, get_object_or_404, redirect
-
-from app.forms import CustomerForm
+from django.shortcuts import redirect, get_object_or_404
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
 from app.models import Category, Product, Customer
+from app.forms import CustomerForm
 
 
-# Create your views here.
+class IndexView(ListView):
+    model = Product
+    template_name = 'app/index.html'
+    context_object_name = 'products'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        category_id = self.kwargs.get('category_id')
+        if category_id:
+            context['products'] = Product.objects.filter(category=category_id)
+        return context
 
 
-def index(request, category_id=None):
-    categories = Category.objects.all()
-    products = Product.objects.all()
-    if category_id:
-        products = Product.objects.filter(category=category_id)
-        context = {'products': products}
-        return render(request, 'app/product-list.html', context)
-    context = {'categories': categories, 'products': products}
-    return render(request, 'app/index.html', context)
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'app/product-detail.html'
+    context_object_name = 'product'
 
 
-def product_detail(request, product_id):
-    product = Product.objects.get(id=product_id)
-    context = {'product': product}
-    return render(request, 'app/product-detail.html', context)
+class CustomerListView(ListView):
+    model = Customer
+    template_name = 'app/customers.html'
+    context_object_name = 'customers'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q', '')
+        if query:
+            return Customer.objects.filter(name__icontains=query)
+        return Customer.objects.all()
 
 
-def customer_view(request):
-    customer = Customer.objects.all()
-    return render(request, 'app/customers.html',{'customers': customer})
+class CustomerDetailView(DetailView):
+    model = Customer
+    template_name = 'app/customer-details.html'
+    context_object_name = 'customer'
 
 
-def customer_detail(request, pk):
-    customer = get_object_or_404(Customer, pk=pk)
-    return render(request, 'app/customers.html', {'customer': customer})
+class CustomerCreateView(CreateView):
+    model = Customer
+    form_class = CustomerForm
+    template_name = 'app/customer_add.html'
+    success_url = reverse_lazy('customers')
 
-def customer_create(request):
-    if request.method == "POST":
-        form = CustomerForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('customer_list')
-    else:
-        form = CustomerForm()
-    return render(request, 'app/customers.html', {'form': form})
+class CustomerUpdateView(UpdateView):
+    model = Customer
+    form_class = CustomerForm
+    template_name = 'app/customer_update.html'
+    success_url = reverse_lazy('customers')
 
-def customer_update(request, pk):
-    customer = get_object_or_404(Customer, pk=pk)
-    if request.method == "POST":
-        form = CustomerForm(request.POST, instance=customer)
-        if form.is_valid():
-            form.save()
-            return redirect('customer_list')
-    else:
-        form = CustomerForm(instance=customer)
-    return render(request, 'app/customers.html', {'form': form})
 
-def customer_delete(request, pk):
-    customer = get_object_or_404(Customer, pk=pk)
-    if request.method == "POST":
-        customer.delete()
-        return redirect('customer_list')
-    return render(request, 'app/customers.html', {'customer': customer})
+class CustomerDeleteView(DeleteView):
+    model = Customer
+    template_name = 'app/customer_delete.html'
+    success_url = reverse_lazy('customers')
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Customer, id=self.kwargs.get('customer_id'))

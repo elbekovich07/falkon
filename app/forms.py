@@ -24,4 +24,6 @@ class CategoryModelForm(forms.ModelForm):
 class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer
-        fields = ['name', 'email', 'phone', 'Billing_Address']
+        fields = ['name', 'email', 'phone', 'Billing_Address', 'image']
+
+    image = forms.ImageField(required=False)

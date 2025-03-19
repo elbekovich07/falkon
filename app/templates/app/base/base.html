@@ -2,6 +2,8 @@
 <!DOCTYPE html>
 <html lang="en-US" dir="ltr">
 
+
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -88,7 +90,7 @@
                             class="toggle-line"></span></span></button>
 
                 </div>
-                <a class="navbar-brand" href="../../../index.html">
+                <a class="navbar-brand" href="{% url 'index' %}">
                     <div class="d-flex align-items-center py-3"><img class="me-2"
                                                                      src="{% static 'app/assets/img/icons/spot-illustrations/falcon.png' %}"
                                                                      alt="" width="40"/><span class="font-sans-serif">falcon</span>
@@ -2312,6 +2314,12 @@
             {% block product_list_content %}
             {% endblock %}
             {% block product_detail_content %}
+            {% endblock %}
+            {% block customer_update_content %}
+            {% endblock %}
+            {% block customer_add_content %}
+            {% endblock %}
+            {% block customer_delete_content %}
             {% endblock %}
             <footer class="footer">
                 <div class="row g-0 justify-content-between fs--1 mt-4 mb-3">
