@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -17,6 +18,13 @@ class IndexView(ListView):
         if category_id:
             context['products'] = Product.objects.filter(category=category_id)
         return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get('q')
+        if query:
+            queryset = queryset.filter(Q(name__icontains=query) | Q(description__icontains=query))
+        return queryset
 
 
 class ProductDetailView(DetailView):
