@@ -32,6 +32,10 @@ class ProductDetailView(DetailView):
     template_name = 'app/product-detail.html'
     context_object_name = 'product'
 
+    def get_object(self, queryset=None):
+        return Product.objects.get(id=self.kwargs['product_id'])
+
+
 
 class CustomerListView(ListView):
     model = Customer

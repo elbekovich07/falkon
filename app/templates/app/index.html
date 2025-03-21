@@ -49,7 +49,7 @@
                                 </div>
                                 <div class="p-2">
                                     <h5 class="fs-0"><a class="text-dark"
-                                                        href="./app/e-commerce/product/product-details.html">{{ product.name }}</a>
+                                                        href="{% url 'product_detail' product.id %}">{{ product.name }}</a>
                                     </h5>
                                     <p class="fs--1 mb-2"><a class="text-500"
                                                              href="#!">{{ product.category.title }}</a></p>
