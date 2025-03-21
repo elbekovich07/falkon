@@ -42,7 +42,6 @@ class RegisterView(View):
         user.set_password(form.cleaned_data['password'])
         user.save()
 
-
         send_mail(
             subject='Hello Dear!',
             message='You successfully registered!',
@@ -52,10 +51,15 @@ class RegisterView(View):
         )
 
         login(self.request, user)
+
         messages.success(self.request, 'You successfully registered!')
 
         return redirect(self.success_url)
 
+
+    def get(self, request):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
 
 
 class LogoutView(View):
