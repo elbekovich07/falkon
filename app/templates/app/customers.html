@@ -87,7 +87,7 @@
                             class="toggle-line"></span></span></button>
 
                 </div>
-                <a class="navbar-brand" href="{% url 'index' %}">
+                <a class="navbar-brand" href="{% url 'app:index' %}">
                     <div class="d-flex align-items-center py-3"><img class="me-2"
                                                                      src="{% static 'app/assets/img/icons/spot-illustrations/falcon.png' %}"
                                                                      alt="" width="40"/><span class="font-sans-serif">falcon</span>
@@ -107,7 +107,7 @@
                             </div>
                         </a>
                             <ul class="nav collapse false" id="dashboard">
-                                <li class="nav-item"><a class="nav-link" href="{% url 'index' %}" aria-expanded="false">
+                                <li class="nav-item"><a class="nav-link" href="{% url 'app:index' %}" aria-expanded="false">
                                     <div class="d-flex align-items-center"><span
                                             class="nav-link-text ps-1">Default</span>
                                     </div>
@@ -1965,7 +1965,7 @@
                 <ul class="navbar-nav align-items-center d-none d-lg-block">
                     <li class="nav-item">
                         <div class="search-box" data-list='{"valueNames":["title"]}'>
-                            <form class="position-relative" action="{% url 'customers' %}" method="GET"
+                            <form class="position-relative" action="{% url 'app:customers' %}" method="GET"
                                   data-bs-toggle="search" data-bs-display="static">
                                 <input class="form-control search-input fuzzy-search" type="search"
                                        name="q" placeholder="Search..." aria-label="Search"/>
@@ -2297,7 +2297,7 @@
                                 </div>
                             </div>
                             <div id="table-customers-replace-element">
-                                <a href="{% url 'customer_add' %}" class="btn btn-falcon-default btn-sm">
+                                <a href="{% url 'app:customer_add' %}" class="btn btn-falcon-default btn-sm">
                                     <span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span>
                                     <span class="d-none d-sm-inline-block ms-1">New</span>
                                 </a>
@@ -2344,7 +2344,7 @@
                                         </div>
                                     </td>
                                     <td class="name align-middle white-space-nowrap py-2"><a
-                                            href="{% url 'customer_detail' customer.id %}">
+                                            href="{% url 'app:customer_detail' customer.id %}">
                                         <div class="d-flex d-flex align-items-center">
                                             <div class="avatar avatar-xl me-2">
                                                 <div class="avatar-name rounded-circle"><span>{{ customer.image }}</span></div>
@@ -2369,9 +2369,9 @@
                                             <div class="dropdown-menu dropdown-menu-end border py-0"
                                                  aria-labelledby="customer-dropdown-0">
                                                 <div class="bg-white py-2"><a class="dropdown-item"
-                                                                              href="{% url 'customer_update' customer.id %}">Edit</a><a
+                                                                              href="{% url 'app:customer_update' customer.id %}">Edit</a><a
                                                         class="dropdown-item text-danger"
-                                                        href="{% url 'customer_delete' customer.id %}">Delete</a></div>
+                                                        href="{% url 'app:customer_delete' customer.id %}">Delete</a></div>
                                             </div>
                                         </div>
                                     </td>

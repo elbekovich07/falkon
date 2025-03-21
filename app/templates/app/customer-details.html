@@ -83,7 +83,7 @@
 
               <button class="btn navbar-toggler-humburger-icon navbar-vertical-toggle" data-bs-toggle="tooltip" data-bs-placement="left" title="Toggle Navigation"><span class="navbar-toggle-icon"><span class="toggle-line"></span></span></button>
 
-            </div><a class="navbar-brand" href="{% url 'index' %}">
+            </div><a class="navbar-brand" href="{% url 'app:index' %}">
               <div class="d-flex align-items-center py-3"><img class="me-2" src="{% static 'app/assets/img/icons/spot-illustrations/falcon.png' %}" alt="" width="40" /><span class="font-sans-serif">falcon</span>
               </div>
             </a>
@@ -97,7 +97,7 @@
                     </div>
                   </a>
                   <ul class="nav collapse false" id="dashboard">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}" aria-expanded="false">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'app:index' %}" aria-expanded="false">
                         <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Default</span>
                         </div>
                       </a>
@@ -1734,8 +1734,8 @@
                 <div class="col">
                   <h5 class="mb-2">{{ customer.name }}(<a href="{{ customer.email }}">{{ customer.email }}</a>)</h5><a class="btn btn-falcon-default btn-sm" href="#!"><span class="fas fa-plus fs--2 me-1"></span>Add note</a>
                   <button class="btn btn-falcon-default btn-sm dropdown-toggle ms-2 dropdown-caret-none" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fas fa-ellipsis-h"></span></button>
-                  <div class="dropdown-menu"><a class="dropdown-item" href="{% url 'customer_update' customer.id %}">Edit</a><a class="dropdown-item" href="#">Report</a><a class="dropdown-item" href="#">Archive</a>
-                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="{% url 'customer_delete' customer.id %}">Delete user</a>
+                  <div class="dropdown-menu"><a class="dropdown-item" href="{% url 'app:customer_update' customer.id %}">Edit</a><a class="dropdown-item" href="#">Report</a><a class="dropdown-item" href="#">Archive</a>
+                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="{% url 'app:customer_delete' customer.id %}">Delete user</a>
                   </div>
                 </div>
                 <div class="col-auto d-none d-sm-block">

@@ -63,6 +63,7 @@ class Customer(models.Model):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15, blank=True, null=True)
     Billing_Address = models.TextField(blank=True, null=True)
+    password = models.CharField(max_length=10, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to='avatars/', null=True, blank=True)
 
