@@ -1,65 +1,109 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
 from django.core.mail import send_mail
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
 from django.views import View
+from django.views.generic import FormView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from root import settings
-from users.forms import RegisterModelForm
+from app.forms import CustomerForm
+from users.forms import RegisterModelForm, LoginForm
+from users.models import Customer
 
 
 # Create your views here.
 
-class LoginView(View):
+
+class CustomerListView(ListView):
+    model = Customer
+    template_name = 'app/customers.html'
+    context_object_name = 'customers'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q', '')
+        if query:
+            return Customer.objects.filter(name__icontains=query)
+        return Customer.objects.all()
+
+
+class CustomerDetailView(DetailView):
+    model = Customer
+    template_name = 'app/customer-details.html'
+    context_object_name = 'customer'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Customer, name=self.kwargs.get('slug'))
+
+
+
+class CustomerCreateView(CreateView):
+    model = Customer
+    form_class = CustomerForm
+    template_name = 'app/customer_add.html'
+    success_url = reverse_lazy('users:customers')
+
+
+class CustomerUpdateView(UpdateView):
+    model = Customer
+    form_class = CustomerForm
+    template_name = 'app/customer_update.html'
+    success_url = reverse_lazy('users:customers')
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Customer, name=self.kwargs.get('slug'))
+
+
+class CustomerDeleteView(DeleteView):
+    model = Customer
+    template_name = 'app/customer_delete.html'
+    success_url = reverse_lazy('users:customers')
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Customer, slug=self.kwargs.get('slug'))
+
+
+class LoginPage(View):
     def get(self, request):
-        return render(request, 'users/login.html')
+        form = LoginForm()
+        return render(request, 'users/login.html', {'form': form})
 
     def post(self, request):
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        user = authenticate(request, email=email, password=password)
-
-        if user:
-            if user.is_active:
-                login(request, user)
-                return redirect('shop:index')
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            user = authenticate(request, email=cd['email'], password=cd['password'])
+            if user:
+                if user.is_active:
+                    login(request, user)
+                    return redirect('app:index')
+                else:
+                    messages.error(request, 'Disabled account')
             else:
-                messages.error(request, 'Disabled account')
-        else:
-            messages.error(request, 'Username or Password invalid')
+                messages.error(request, 'Username or Password invalid')
 
-        return render(request, 'users/login.html')
+        return render(request, 'users/login.html', {'form': form})
 
-class RegisterView(View):
+
+class RegisterPage(FormView):
     template_name = 'users/register.html'
     form_class = RegisterModelForm
-    success_url = 'app:index'
 
     def form_valid(self, form):
         user = form.save(commit=False)
         user.is_staff = True
         user.is_superuser = True
-        user.set_password(form.cleaned_data['password'])
+        user.set_password(user.password)
         user.save()
-
         send_mail(
-            subject='Hello Dear!',
-            message='You successfully registered!',
-            from_email='olmosnormuminov02@gmail.com',
-            recipient_list=[user.email],
+            'Helllo Dear!',
+            'You are successfully registered!',
+            'olmosnormuminov02@gmail.com',
+            [user.email],
             fail_silently=False,
         )
-
         login(self.request, user)
-
-        messages.success(self.request, 'You successfully registered!')
-
-        return redirect(self.success_url)
-
-
-    def get(self, request):
-        form = self.form_class()
-        return render(request, self.template_name, {'form': form})
+        return redirect('app:index')
 
 
 class LogoutView(View):
@@ -68,4 +112,4 @@ class LogoutView(View):
 
     def post(self, request):
         logout(request)
-        return redirect('app:index')
+        return redirect('shop:index')

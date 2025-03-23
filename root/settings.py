@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
 ]
 
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -139,10 +141,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'shop/media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'olmosnormuminov02@gmail.com'
 EMAIL_HOST_PASSWORD = 'weyw akng swue lgmf'
-

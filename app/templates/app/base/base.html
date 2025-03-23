@@ -316,7 +316,7 @@
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="nav-item"><a class="nav-link" href="{% url 'app:customers' %}"
+                                <li class="nav-item"><a class="nav-link" href="{% url 'users:customers' %}"
                                                         aria-expanded="false">
                                     <div class="d-flex align-items-center"><span
                                             class="nav-link-text ps-1">Customers</span>
@@ -2304,7 +2304,6 @@
                         <div class="dropdown-menu dropdown-menu-end py-0" aria-labelledby="navbarDropdownUser">
                             <div class="bg-white dark__bg-1000 rounded-2 py-2">
                                 {% if request.user.is_authenticated %}
-                                    <!-- Foydalanuvchi login qilingan -->
                                     <a class="dropdown-item fw-bold text-warning" href="#!">
                                         <span class="fas fa-crown me-1"></span><span>Go Pro</span>
                                     </a>
@@ -2316,9 +2315,7 @@
                                     <a class="dropdown-item" href="#">Settings</a>
                                     <a class="dropdown-item" href="{% url 'users:logout' %}">Logout</a>
                                 {% else %}
-                                    <!-- Login qilinmagan -->
                                     <a class="dropdown-item" href="{% url 'users:login' %}">Login</a>
-                                    <!-- Login linki -->
                                     <a class="dropdown-item" href="{% url 'users:register' %}">Register</a>
                                 {% endif %}
                             </div>
