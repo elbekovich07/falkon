@@ -6,6 +6,8 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import FormView
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.hashers import make_password
+
 
 from app.forms import CustomerForm
 from users.forms import RegisterModelForm, LoginForm
@@ -85,31 +87,43 @@ class LoginPage(View):
         return render(request, 'users/login.html', {'form': form})
 
 
-class RegisterPage(FormView):
+
+
+class RegisterPage(CreateView):
+    model = Customer
     template_name = 'users/register.html'
     form_class = RegisterModelForm
+    success_url = reverse_lazy('users')
+
+
 
     def form_valid(self, form):
         user = form.save(commit=False)
         user.is_staff = True
         user.is_superuser = True
-        user.set_password(user.password)
+
+        user.password = form.cleaned_data['password']  
         user.save()
+
         send_mail(
-            'Helllo Dear!',
+            'Hello Dear!',
             'You are successfully registered!',
             'olmosnormuminov02@gmail.com',
             [user.email],
             fail_silently=False,
         )
+
         login(self.request, user)
+
         return redirect('app:index')
+    
 
-
+    
 class LogoutView(View):
     def get(self, request):
         return render(request, 'users/logout.html')
 
     def post(self, request):
         logout(request)
-        return redirect('shop:index')
+        return redirect('app:index')  
+

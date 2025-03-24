@@ -2301,25 +2301,20 @@
 
                         </div>
                     </a>
-                        <div class="dropdown-menu dropdown-menu-end py-0" aria-labelledby="navbarDropdownUser">
-                            <div class="bg-white dark__bg-1000 rounded-2 py-2">
-                                {% if request.user.is_authenticated %}
-                                    <a class="dropdown-item fw-bold text-warning" href="#!">
-                                        <span class="fas fa-crown me-1"></span><span>Go Pro</span>
-                                    </a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#!">Set status</a>
-                                    <a class="dropdown-item" href="#">Profile &amp; account</a>
-                                    <a class="dropdown-item" href="#!">Feedback</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">Settings</a>
-                                    <a class="dropdown-item" href="{% url 'users:logout' %}">Logout</a>
-                                {% else %}
-                                    <a class="dropdown-item" href="{% url 'users:login' %}">Login</a>
-                                    <a class="dropdown-item" href="{% url 'users:register' %}">Register</a>
-                                {% endif %}
-                            </div>
+                    <div class="dropdown-menu dropdown-menu-end py-0" aria-labelledby="navbarDropdownUser">
+                        <div class="bg-white dark__bg-1000 rounded-2 py-2">
+                            {% if user.is_authenticated %}
+                                <form method="post" action="{% url 'users:logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item">Chiqish</button>
+                                </form>
+                            {% else %}
+                                <a class="dropdown-item" href="{% url 'users:login' %}">Kirish</a>
+                            {% endif %}
                         </div>
+                    </div>
+                    
+    
 
                     </li>
                 </ul>

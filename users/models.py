@@ -1,17 +1,25 @@
 from django.db import models
 from django.utils.text import slugify
+from django.contrib.auth.models import AbstractBaseUser
+from .managers import CustomUserManager
 
 
 
-class Customer(models.Model):
-    name = models.CharField(max_length=50)
+class Customer(AbstractBaseUser):
+    username = None
+    name = models.CharField(max_length=100, unique=True)
     email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=15, blank=True, null=True)
+    phone = models.CharField(max_length=100, blank=True, null=True)
     billing_address = models.TextField(blank=True, null=True)
-    password = models.CharField(max_length=10, blank=True, null=True)
+    password = models.CharField(max_length=100, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to='avatars/', null=True, blank=True)
     slug = models.SlugField(unique=True, blank=True)
+
+    USERNAME_FIELD = 'name'  
+    REQUIRED_FIELDS = []  
+
+    objects = CustomUserManager
 
     def save(self, *args, **kwargs):
         if not self.slug or self.slug.strip() == "":

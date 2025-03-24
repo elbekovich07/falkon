@@ -2,6 +2,8 @@ from django.contrib import admin
 
 from app.models import Category, Product, Images, Attribute, AttributeValue, ProductAttribute
 
+from users.models import Customer
+
 # Register your models here.
 
 
@@ -23,3 +25,5 @@ class CategoryAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'price', 'slug', 'category')
     prepopulated_fields = {"slug": ("name",)}
+
+admin.site.register(Customer)

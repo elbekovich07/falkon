@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'import_export',
     'adminsortable2',
     'users.apps.UsersConfig',
+    'social_django',
 ]
 
 
@@ -148,3 +149,17 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'olmosnormuminov02@gmail.com'
 EMAIL_HOST_PASSWORD = 'weyw akng swue lgmf'
+
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.google.GoogleOAuth2',
+
+]
+
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '835121146594-4u9a3mk6rtl90bg1vmbl61matunnuaii.apps.googleusercontent.com' # Google Client ID
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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' # Google Client Secret
+LOGIN_REDIRECT_URL = 'app:index'
+LOGOUT_REDIRECT_URL = 'users:login'
+
