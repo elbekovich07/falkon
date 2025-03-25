@@ -125,5 +125,6 @@ class LogoutView(View):
 
     def post(self, request):
         logout(request)
-        return redirect('app:index')  
+        messages.success(request, "Succesfully logout")
+        return redirect('app:index')
 
