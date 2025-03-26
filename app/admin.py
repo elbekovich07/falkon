@@ -26,4 +26,14 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'price', 'slug', 'category')
     prepopulated_fields = {"slug": ("name",)}
 
-admin.site.register(Customer)
+
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'email', 'phone', 'VAT_Number')
+    prepopulated_fields = {"slug": ("name",)}
+    readonly_fields = ('created_at','VAT_Number',)
+    fieldsets = (
+        ('basic information:', {
+            'fields': ('name', 'email', 'phone', 'VAT_Number', 'slug', 'created_at')
+        }),
+    )

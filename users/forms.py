@@ -23,14 +23,27 @@ class RegisterModelForm(forms.ModelForm):
         fields = ('email', 'password', 'confirm_password')
 
     def clean_email(self):
-        email = self.cleaned_data.get('email').lower()
-        if Customer.objects.filter(email=email).exists():
-            raise forms.ValidationError(f'This {email} already registered.')
-        return email
+        email = self.cleaned_data.get('email')
+        if email and Customer.objects.filter(email=email.lower()).exists():
+            raise forms.ValidationError(f'This {email} is already registered.')
+        return email.lower()
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        if Customer.objects.filter(name=name).exists():
+            raise forms.ValidationError(f'Username "{name}" is already taken.')
+        return name
 
     def clean_confirm_password(self):
-        confirm_password = self.cleaned_data.get('confirm_password')
         password = self.cleaned_data.get('password')
-        if password != confirm_password:
-            raise forms.ValidationError(f'Password don\'t match')
+        confirm_password = self.cleaned_data.get('confirm_password')
+        if password and confirm_password and password != confirm_password:
+            raise forms.ValidationError("Passwords don't match.")
         return confirm_password
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.password = make_password(self.cleaned_data['password'])
+        if commit:
+            user.save()
+        return user

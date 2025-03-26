@@ -12,7 +12,7 @@
                                 {% for image in product.images.all %}
                                     <div class="swiper-slide h-100"><img class="rounded-1 fit-cover h-100 w-100"
                                                                          src="{{ image.image.url }}"
-                                                                         alt=""/></div>
+                                                                         alt="" style="width:400px; height: 4000px; object-fit: contain;"/></div>
                                 {% endfor %}
                             </div>
                             <div class="swiper-nav">

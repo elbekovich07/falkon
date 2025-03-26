@@ -1,8 +1,9 @@
+import random
+from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from django.utils.text import slugify
-from django.contrib.auth.models import AbstractBaseUser
-from .managers import CustomUserManager
 
+from .managers import CustomUserManager
 
 
 class Customer(AbstractBaseUser):
@@ -15,9 +16,10 @@ class Customer(AbstractBaseUser):
     created_at = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to='avatars/', null=True, blank=True)
     slug = models.SlugField(unique=True, blank=True)
+    VAT_Number = models.CharField(max_length=9, unique=True, blank=True)
 
-    USERNAME_FIELD = 'name'  
-    REQUIRED_FIELDS = []  
+    USERNAME_FIELD = 'name'
+    REQUIRED_FIELDS = []
 
     objects = CustomUserManager
 
@@ -31,7 +33,10 @@ class Customer(AbstractBaseUser):
                 counter += 1
             self.slug = slug
 
+        if not self.VAT_Number:
+            self.VAT_Number = str(random.randint(100000000, 999999999))
+
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.name} {self.email}"
+        return f"{self.name} {self.email} {self.VAT_Number}"

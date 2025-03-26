@@ -1734,8 +1734,8 @@
                 <div class="col">
                   <h5 class="mb-2">{{ customer.name }}(<a href="{{ customer.email }}">{{ customer.email }}</a>)</h5><a class="btn btn-falcon-default btn-sm" href="#!"><span class="fas fa-plus fs--2 me-1"></span>Add note</a>
                   <button class="btn btn-falcon-default btn-sm dropdown-toggle ms-2 dropdown-caret-none" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fas fa-ellipsis-h"></span></button>
-                  <div class="dropdown-menu"><a class="dropdown-item" href="{% url 'app:customer_update' customer.slug %}">Edit</a><a class="dropdown-item" href="#">Report</a><a class="dropdown-item" href="#">Archive</a>
-                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="{% url 'app:customer_delete' customer.id %}">Delete user</a>
+                  <div class="dropdown-menu"><a class="dropdown-item" href="{% url 'users:customer_update' customer.slug %}">Edit</a><a class="dropdown-item" href="#">Report</a><a class="dropdown-item" href="#">Archive</a>
+                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="{% url 'users:customer_delete' customer.slug %}">Delete user</a>
                   </div>
                 </div>
                 <div class="col-auto d-none d-sm-block">
@@ -1796,7 +1796,7 @@
                       <p class="fw-semi-bold mb-0">VAT number</p>
                     </div>
                     <div class="col">
-                      <p class="fst-italic text-400 mb-0">No VAT number</p>
+                      <p class="fst-italic text-400 mb-0">{{ customer.VAT_Number }}</p>
                     </div>
                   </div>
                 </div>

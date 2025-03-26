@@ -4,9 +4,10 @@ from django.core.mail import send_mail
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import FormView
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.contrib.auth import get_backends
 from django.contrib.auth.hashers import make_password
+
 
 
 from app.forms import CustomerForm
@@ -29,14 +30,10 @@ class CustomerListView(ListView):
         return Customer.objects.all()
 
 
-class CustomerDetailView(DetailView):
-    model = Customer
-    template_name = 'app/customer-details.html'
-    context_object_name = 'customer'
-
-    def get_object(self, queryset=None):
-        return get_object_or_404(Customer, name=self.kwargs.get('slug'))
-
+class CustomerDetailView(View):
+    def get(self, request, slug):
+        customer = get_object_or_404(Customer, slug=slug)
+        return render(request, 'app/customer-details.html', {'customer': customer})
 
 
 class CustomerCreateView(CreateView):
@@ -87,23 +84,33 @@ class LoginPage(View):
         return render(request, 'users/login.html', {'form': form})
 
 
-
-
 class RegisterPage(CreateView):
     model = Customer
     template_name = 'users/register.html'
     form_class = RegisterModelForm
     success_url = reverse_lazy('users')
 
-
-
     def form_valid(self, form):
+        if Customer.objects.filter(name=form.cleaned_data['username']).exists():
+            messages.error(self.request, "This username is already taken!")
+            return self.form_invalid(form)
+
+        if Customer.objects.filter(email=form.cleaned_data['email']).exists():
+            messages.error(self.request, "This email is already taken!")
+            return self.form_invalid(form)
+
+        if form.cleaned_data['password'] != form.cleaned_data['confirm_password']:
+            messages.error(self.request, "Passwords do not match")
+            return self.form_invalid(form)
+
         user = form.save(commit=False)
         user.is_staff = True
         user.is_superuser = True
-
-        user.password = form.cleaned_data['password']  
+        user.password = make_password(form.cleaned_data['password'])
         user.save()
+
+        backend = get_backends()[0].__class__.__name__
+        login(self.request, user, backend=f'django.contrib.auth.backends.{backend}')
 
         send_mail(
             'Hello Dear!',
@@ -113,12 +120,8 @@ class RegisterPage(CreateView):
             fail_silently=False,
         )
 
-        login(self.request, user)
-
         return redirect('app:index')
-    
 
-    
 class LogoutView(View):
     def get(self, request):
         return render(request, 'users/logout.html')
@@ -127,4 +130,3 @@ class LogoutView(View):
         logout(request)
         messages.success(request, "Succesfully logout")
         return redirect('app:index')
-
