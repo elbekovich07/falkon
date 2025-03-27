@@ -15,6 +15,6 @@ urlpatterns = [
     path('customers/', CustomerListView.as_view(), name='customers'),
     path('customers/new/', CustomerCreateView.as_view(), name='customer_add'),
     path('customers/<slug:slug>/', CustomerDetailView.as_view(), name='customer_detail'),
-    path('customers/<slug:slug>/edit/', CustomerUpdateView.as_view(), name='customer_update'),
+    path('customers/<slug:slug>/update/', CustomerUpdateView.as_view(), name='customer_update'),
     path('customers/<slug:slug>/delete/', CustomerDeleteView.as_view(), name='customer_delete'),
 ]
