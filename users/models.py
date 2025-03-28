@@ -21,7 +21,7 @@ class Customer(AbstractBaseUser):
     USERNAME_FIELD = 'name'
     REQUIRED_FIELDS = []
 
-    objects = CustomUserManager
+    objects = CustomUserManager()
 
     def save(self, *args, **kwargs):
         if not self.slug or self.slug.strip() == "":

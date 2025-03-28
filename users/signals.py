@@ -1,9 +1,9 @@
 import random
+
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.core.mail import send_mail
-from django.contrib.auth.models import User
-from pyexpat.errors import messages
 
 from users.models import Customer
 
@@ -22,3 +22,8 @@ def create_vat_number(sender, instance, created, **kwargs):
             message = f"Customer {instance.name} data has been updated or created."
             send_mail(subject, message, "olmosnormuminov02@gmail.com", recipient_list)
 
+#
+# @receiver(post_save, sender=User)
+# def create_customer(sender, instance, created, **kwargs):
+#     if created:
+#

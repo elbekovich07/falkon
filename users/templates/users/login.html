@@ -8,10 +8,10 @@
         <div class="container-fluid">
             <div class="row min-vh-100 flex-center g-0">
                 <div class="col-lg-8 col-xxl-5 py-3 position-relative"><img class="bg-auth-circle-shape"
-                                                                            src="{% static 'users/assets/img/icons/spot-illustrations/bg-shape.png' %}"
+                                                                            src="{% static 'app/assets/img/icons/spot-illustrations/bg-shape.png' %}"
                                                                             alt="" width="250"><img
                         class="bg-auth-circle-shape-2"
-                        src="{% static 'users/assets/img/icons/spot-illustrations/shape-1.png' %}"
+                        src="{% static 'app/assets/img/icons/spot-illustrations/shape-1.png' %}"
                         alt=""
                         width="150">
                     <div class="card overflow-hidden z-index-1">
@@ -20,7 +20,7 @@
                                 <div class="col-md-5 text-center bg-card-gradient">
                                     <div class="position-relative p-4 pt-md-5 pb-md-7 light">
                                         <div class="bg-holder bg-auth-card-shape"
-                                             style="background-image:url({% static 'users/assets/img/icons/spot-illustrations/half-circle.png' %});">
+                                             style="background-image:url({% static 'app/assets/img/icons/spot-illustrations/half-circle.png' %});">
                                         </div>
                                         <!--/.bg-holder-->
 
@@ -113,21 +113,24 @@
                                             <div class="divider-content-center">or log in with</div>
                                         </div>
                                         <div class="row g-2 mt-2">
-                                            <div class="col-sm-6"><a
-                                                    class="btn btn-outline-google-plus btn-sm d-block w-100"
-                                                    href="{% url 'social:begin' 'google-oauth2' %}"><span
-                                                    class="fab fa-google-plus-g me-2" data-fa-transform="grow-8"></span>
-                                                google</a></div>
+                                            <div class="col-sm-6">
+                                                <a
+                                                        class="btn btn-outline-google-plus btn-sm d-block w-100"
+                                                        href="{% url 'social:begin' 'google-oauth2' %}">
+                                                    <span
+                                                            class="fab fa-google-plus-g me-2"
+                                                            data-fa-transform="grow-8">
+
+                                                    </span>
+                                                    google
+                                                </a>
+                                            </div>
                                             <div class="col-sm-6"><a
                                                     class="btn btn-outline-facebook btn-sm d-block w-100"
-                                                    href="{% url 'social:begin' 'facebook' %}"><span class="fab fa-facebook-square me-2"
+                                                    href="{% url 'social:begin' 'github' %}"><span class="fab fa-github-square me-2"
                                                                    data-fa-transform="grow-8"></span>
-                                                facebook</a></div>
-                                                <div class="col-sm-6"><a
-                                                    class="btn btn-outline-facebook btn-sm d-block w-100"
-                                                    href="{% url 'social:begin' 'github' %}"><span class="fab fa-github me-2"
-                                                                   data-fa-transform="grow-8"></span>
-                                                Git hub</a></div>
+                                                github</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

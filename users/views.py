@@ -1,18 +1,21 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
-from django.core.mail import send_mail
+from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMessage
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.contrib.auth import get_backends
-from django.contrib.auth.hashers import make_password
-
-
+from django.utils.encoding import force_bytes
 
 from app.forms import CustomerForm
 from users.forms import RegisterModelForm, LoginForm
 from users.models import Customer
+from users.tokens import account_activation_token
 
 
 # Create your views here.
@@ -85,42 +88,70 @@ class LoginPage(View):
 
 
 class RegisterPage(CreateView):
-    model = Customer
-    template_name = 'users/register.html'
+    model = User
     form_class = RegisterModelForm
-    success_url = reverse_lazy('users')
+    template_name = 'users/register.html'
+    success_url = reverse_lazy('users:verify_email_done')
 
     def form_valid(self, form):
-        if Customer.objects.filter(name=form.cleaned_data['username']).exists():
-            messages.error(self.request, "This username is already taken!")
-            return self.form_invalid(form)
-
-        if Customer.objects.filter(email=form.cleaned_data['email']).exists():
-            messages.error(self.request, "This email is already taken!")
-            return self.form_invalid(form)
-
-        if form.cleaned_data['password'] != form.cleaned_data['confirm_password']:
-            messages.error(self.request, "Passwords do not match")
-            return self.form_invalid(form)
-
         user = form.save(commit=False)
-        user.is_staff = True
-        user.is_superuser = True
-        user.password = make_password(form.cleaned_data['password'])
+        user.is_active = False
+        user.set_password(form.cleaned_data['password'])
         user.save()
 
-        backend = get_backends()[0].__class__.__name__
-        login(self.request, user, backend=f'django.contrib.auth.backends.{backend}')
+        current_site = get_current_site(self.request)
+        subject = 'Verify Your Email'
+        message = render_to_string('users/Email/verify_email_message.html', {
+            'user': user,
+            'domain': current_site.domain,
+            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            'token': account_activation_token.make_token(user),
+        })
 
-        send_mail(
-            'Hello Dear!',
-            'You are successfully registered!',
-            'olmosnormuminov02@gmail.com',
-            [user.email],
-            fail_silently=False,
-        )
+        email = EmailMessage(subject, message, to=[user.email])
+        email.content_subtype = 'html'
+        email.send()
 
+        messages.success(self.request, "Please check your email to verify your account.")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        pass
+
+
+def email_required(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        user = request.user
+
+        if user.is_authenticated and not user.is_active:
+            user.email = email
+            user.save()
+            return redirect('app:index')
+    return render(request, 'Github/email-required.html')
+
+
+def verify_email_done(request):
+    return render(request, 'users/Email/verify_email_done.html')
+
+
+def verify_email_confirm(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+        messages.success(request, 'Thank you for your email confirmation.')
         return redirect('app:index')
+    else:
+        messages.error(request, 'Activation link is invalid.')
+    return render(request, 'users/Email/verify_email_confirm.html')
+
+
 
 class LogoutView(View):
     def get(self, request):
