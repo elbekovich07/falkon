@@ -20,7 +20,7 @@ class RegisterModelForm(forms.ModelForm):
 
     class Meta:
         model = Customer
-        fields = ('email', 'password', 'confirm_password')
+        fields = ('name','email', 'password', 'confirm_password')
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -47,3 +47,4 @@ class RegisterModelForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+

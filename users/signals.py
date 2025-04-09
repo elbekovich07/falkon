@@ -8,10 +8,10 @@ from django.dispatch import receiver
 from users.models import Customer
 
 
-@receiver(post_save, sender=User)
+@receiver(post_save, sender=Customer)
 def create_vat_number(sender, instance, created, **kwargs):
-    if created and instance.VAT_Number:
-        instance.VAT_Number = str(random.randint(100000000, 100000000))
+    if created:
+        instance.VAT_Number = str(random.randint(100000000, 999999999))
         instance.save()
 
         superusers = User.objects.filter(is_superuser=True)
@@ -19,11 +19,11 @@ def create_vat_number(sender, instance, created, **kwargs):
 
         if recipient_list:
             subject = "Change in customer information!"
-            message = f"Customer {instance.name} data has been updated or created."
-            send_mail(subject, message, "olmosnormuminov02@gmail.com", recipient_list)
-
-#
-# @receiver(post_save, sender=User)
-# def create_customer(sender, instance, created, **kwargs):
-#     if created:
-#
+            message = f"Customer {instance.name} data has been created or updated."
+            send_mail(
+                subject,
+                message,
+                "olmosnormuminov02@gmail.com",
+                recipient_list,
+                fail_silently=False,
+            )

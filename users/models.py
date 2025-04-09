@@ -8,7 +8,7 @@ from .managers import CustomUserManager
 
 class Customer(AbstractBaseUser):
     username = None
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, unique=True,null=False, blank=True)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=100, blank=True, null=True)
     billing_address = models.TextField(blank=True, null=True)

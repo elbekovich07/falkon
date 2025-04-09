@@ -1,16 +1,22 @@
+import csv
+import json
+
+import openpyxl
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
+from django.utils.encoding import force_bytes
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.text import slugify
 from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.utils.encoding import force_bytes
 
 from app.forms import CustomerForm
 from users.forms import RegisterModelForm, LoginForm
@@ -95,6 +101,14 @@ class RegisterPage(CreateView):
 
     def form_valid(self, form):
         user = form.save(commit=False)
+
+        if not user.name:
+            form.add_error('name', 'This field is required.')
+            return self.form_invalid(form)
+
+        if not user.slug:
+            user.slug = slugify(user.name)
+
         user.is_active = False
         user.save()
 
@@ -112,8 +126,6 @@ class RegisterPage(CreateView):
 
         messages.success(self.request, "Please check your email to complete registration.")
         return super().form_valid(form)
-
-
 def email_required(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -157,3 +169,58 @@ class LogoutView(View):
         logout(request)
         messages.success(request, "Succesfully logout")
         return redirect('app:index')
+
+
+def export_data(request):
+    format = request.GET.get('format')
+    if format == 'csv':
+        meta = Customer._meta
+        field_names = [field.name for field in meta.fields]
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="customer_list.csv'
+        writer = csv.writer(response)
+        writer.writerow(field_names)
+        for obj in Customer.objects.all():
+            row = writer.writerow([getattr(obj, field) for field in field_names])
+            return response
+
+    elif format == 'json':
+        response = HttpResponse(content_type='application/json')
+        data = list(Customer.objects.all().values_list('id', 'name', 'email', 'phone', 'billing_address', 'password',
+                                                       'created_at', 'image', 'slug', 'VAT_Number'))
+        response.write(json.dumps(data, indent=4, default=str))
+        response['Content-Disposition'] = 'attachment; filename="customer.json"'
+        return response
+
+    elif format == 'xlsx':
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = 'Customers List'
+
+        colums = ['id', 'name', 'email', 'phone', 'billing_address', 'password', 'created_at', 'image', 'slug',
+                  'VAT_Number']
+        fields = ['id', 'name', 'email', 'phone', 'billing_address', 'password', 'created_at', 'image', 'slug',
+                  'VAT_Number']
+
+        for col_num, column_title in enumerate(colums, 1):
+            ws.cell(row=1, column=col_num, value=column_title)
+
+        customers = Customer.objects.all().values_list(*fields)
+
+        for row_num, row_data in enumerate(customers, 2):
+            for col_num, cell_value in enumerate(row_data, 1):
+                if hasattr(cell_value, 'isoformat'):
+                    cell_value = cell_value.isoformat()
+                elif hasattr(cell_value, 'url'):
+                    cell_value = cell_value.url
+                ws.cell(row=row_num, column=col_num, value=cell_value)
+
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="customer.xlsx"'
+        wb.save(response)
+        return response
+
+    else:
+        response = HttpResponse(status=404)
+        response.content = 'Bad request'
+        return response

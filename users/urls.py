@@ -19,5 +19,6 @@ urlpatterns = [
     path('customers/<slug:slug>/delete/', CustomerDeleteView.as_view(), name='customer_delete'),
     path('email-required/', views.email_required, name='email_required'),
     path('verifiy-email-done/', views.verify_email_done, name='verify_email_done'),
-    path('verify-email-confirm/<uidb64>/<token>/', views.verify_email_confirm, name='verify_email_confirm')
+    path('verify-email-confirm/<uidb64>/<token>/', views.verify_email_confirm, name='verify_email_confirm'),
+    path('export-data/', views.export_data, name='export_data')
 ]
