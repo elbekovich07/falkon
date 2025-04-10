@@ -59,6 +59,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'root.middlewares.RequestLoggingMiddleware',
+    'root.middlewares.AutoLogoutMiddleWare'
 ]
 
 ROOT_URLCONF = 'root.urls'
@@ -183,5 +185,9 @@ SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 
 SOCIAL_AUTH_GITHUB_KEY = os.getenv('SOCIAL_AUTH_GITHUB_KEY')
 SOCIAL_AUTH_GITHUB_SECRET = os.getenv('SOCIAL_AUTH_GITHUB_SECRET')
+
+SESSION_COOKIE_AGE = 60
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 
 
