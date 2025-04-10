@@ -60,7 +60,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'root.middlewares.RequestLoggingMiddleware',
-    'root.middlewares.AutoLogoutMiddleWare'
+    'root.middlewares.AutoLogoutMiddleWare',
+    'root.middlewares.SimpleMiddleware',
 ]
 
 ROOT_URLCONF = 'root.urls'
@@ -187,7 +188,7 @@ SOCIAL_AUTH_GITHUB_KEY = os.getenv('SOCIAL_AUTH_GITHUB_KEY')
 SOCIAL_AUTH_GITHUB_SECRET = os.getenv('SOCIAL_AUTH_GITHUB_SECRET')
 
 SESSION_COOKIE_AGE = 60
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 
 

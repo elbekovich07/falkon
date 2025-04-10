@@ -3,6 +3,16 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.utils.timezone import now
 
+class SimpleMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+        print("Request send")
+
+    def __call__(self, request):
+        print("Request received")
+        response = self.get_response(request)
+        print("Response returned")
+        return response
 
 class RequestLoggingMiddleware:
     def __init__(self, get_response):

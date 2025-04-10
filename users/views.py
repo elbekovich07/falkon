@@ -14,8 +14,8 @@ from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.text import slugify
 from django.views import View
+from django.views.generic import FormView
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from app.forms import CustomerForm
@@ -71,12 +71,9 @@ class CustomerDeleteView(DeleteView):
         return get_object_or_404(Customer, slug=self.kwargs.get('slug'))
 
 
-class LoginPage(View):
-    def get(self, request):
-        form = LoginForm()
-        return render(request, 'users/login.html', {'form': form})
-
-    def post(self, request):
+def login_page(request):
+    form = LoginForm()
+    if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
@@ -86,46 +83,53 @@ class LoginPage(View):
                     login(request, user)
                     return redirect('app:index')
                 else:
-                    messages.error(request, 'Disabled account')
+                    messages.add_message(
+                        request,
+                        messages.ERROR,
+                        'Disabled account'
+                    )
+                    return render(request, 'users/login.html')
             else:
-                messages.error(request, 'Username or Password invalid')
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    'Username or Password invalid'
+                )
+                return render(request, 'users/login.html')
 
-        return render(request, 'users/login.html', {'form': form})
+    return render(request, 'users/login.html', {'form': form})
 
 
-class RegisterPage(CreateView):
-    model = Customer
-    form_class = RegisterModelForm
+class RegisterPage(FormView):
     template_name = 'users/register.html'
-    success_url = reverse_lazy('users:login')
+    form_class = RegisterModelForm
+    success_url = reverse_lazy('users:verify_email_done')
 
     def form_valid(self, form):
         user = form.save(commit=False)
-
-        if not user.name:
-            form.add_error('name', 'This field is required.')
-            return self.form_invalid(form)
-
-        if not user.slug:
-            user.slug = slugify(user.name)
-
+        user.is_staff = True
+        user.is_superuser = True
         user.is_active = False
+        user.set_password(user.password)
         user.save()
-
         current_site = get_current_site(self.request)
-        subject = 'Verify your email'
+        subject = "Verify Email"
         message = render_to_string('users/Email/verify_email_message.html', {
+            'request': self.request,
             'user': user,
             'domain': current_site.domain,
             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
             'token': account_activation_token.make_token(user),
         })
-        email = EmailMessage(subject, message, to=[user.email])
+        user.save()
+        email = EmailMessage(
+            subject, message, to=[user.email]
+        )
         email.content_subtype = 'html'
         email.send()
-
-        messages.success(self.request, "Please check your email to complete registration.")
         return super().form_valid(form)
+
+
 def email_required(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -145,19 +149,19 @@ def verify_email_done(request):
 def verify_email_confirm(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
+        user = Customer.objects.get(pk=uid)
 
+    except(TypeError, ValueError, OverflowError, Customer.DoesNotExist):
+        user = None
     if user and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
         login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-        messages.success(request, 'Thank you for your email confirmation.')
-        return redirect('app:index')
+        messages.success(request, 'Your email has been verified.')
+        return redirect('shop:index')
     else:
-        messages.error(request, 'Activation link is invalid.')
-    return render(request, 'users/Email/verify_email_confirm.html')
+        messages.warning(request, 'The link is invalid.')
+    return render(request, 'users/email/verify_email_confirm.html')
 
 
 
