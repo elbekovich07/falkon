@@ -87,8 +87,8 @@ class SecurityMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        referer = request.META.get('HTTP_REFERER', "")
-        if not referer:
+        referer = request.META.get('HTTP_REFERER')
+        if referer :
             return HttpResponse("For security reasons, this request cannot be accepted.")
 
         response = self.get_response(request)
