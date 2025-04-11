@@ -158,7 +158,7 @@ def verify_email_confirm(request, uidb64, token):
         user.save()
         login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         messages.success(request, 'Your email has been verified.')
-        return redirect('shop:index')
+        return redirect('app:index')
     else:
         messages.warning(request, 'The link is invalid.')
     return render(request, 'users/email/verify_email_confirm.html')
@@ -228,3 +228,13 @@ def export_data(request):
         response = HttpResponse(status=404)
         response.content = 'Bad request'
         return response
+
+def home(request):
+    if request.device_type == "Mobile":
+        # return render(request, "mobile/home.html")     Mobile Telefon uchun html yaratiladi. Tez kunda!!!
+        pass
+    else:
+        return render(request, "app/index.html")
+
+
+

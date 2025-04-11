@@ -62,6 +62,8 @@ MIDDLEWARE = [
     'root.middlewares.RequestLoggingMiddleware',
     'root.middlewares.AutoLogoutMiddleWare',
     'root.middlewares.SimpleMiddleware',
+    'root.middlewares.user_agent_detection_middleware',
+    'root.middlewares.SecurityMiddleware',
 ]
 
 ROOT_URLCONF = 'root.urls'

@@ -7,13 +7,15 @@
                 <div class="col-lg-6 mb-4 mb-lg-0">
                     <div class="product-slider" id="galleryTop">
                         <div class="swiper-container theme-slider position-lg-absolute all-0"
-                             data-swiper='{"autoHeight":true,"spaceBetween":{{ product.images.count }},"loop":true,"loopedSlides":{{ product.images.count }},"thumb":{"spaceBetween":{{ product.images.count }},"slidesPerView":{{ product.images.count }},"loop":true,"freeMode":true,"grabCursor":true,"loopedSlides":{{ product.images.count }},"centeredSlides":true,"slideToClickedSlide":true,"watchSlidesVisibility":true,"watchSlidesProgress":true,"parent":"#galleryTop"},"slideToClickedSlide":true}'>
+                             data-swiper='{"autoHeight":true,"spaceBetween":{{ product.images.count }},"loop":true,"loopedSlides":{{ product.images.count }},"thumb":{"spaceBetween":{{ product.images.count }},"slidesPerView":5,"loop":true,"freeMode":true,"grabCursor":true,"loopedSlides":{{ product.images.count }},"centeredSlides":true,"slideToClickedSlide":true,"watchSlidesVisibility":true,"watchSlidesProgress":true,"parent":"#galleryTop"},"slideToClickedSlide":true}'>
                             <div class="swiper-wrapper h-100">
-{#                                {% for image in product.images.all %}#}
-{#                                    <div class="swiper-slide h-100"><img class="rounded-1 fit-cover h-100 w-100"#}
-{#                                                                         src="{{ image.image.url }}"#}
-{#                                                                         alt="" style="width:400px; height: 4000px; object-fit: contain;"/></div>#}
-{#                                {% endfor %}#}
+                                {% for image in product.images.all %}
+                                    <div class="swiper-slide h-100"><img class="rounded-1 fit-cover h-100 w-100"
+                                                                         src="{{ image.image.url }}"
+                                                                         alt=""
+                                                                         style="width:400px; height: 4000px; object-fit: contain;"/>
+                                    </div>
+                                {% endfor %}
                             </div>
                             <div class="swiper-nav">
                                 <div class="swiper-button-next swiper-button-white"></div>
@@ -90,42 +92,13 @@
                                  aria-labelledby="specifications-tab">
                                 <table class="table fs--1 mt-3">
                                     <tbody>
+                                    {% for attribute in product.attributes.all %}
                                     <tr>
-                                        <td class="bg-100" style="width: 30%;">Processor</td>
-                                        <td>2.3GHz quad-core Intel Core i5,</td>
+                                        <td class="bg-100" style="width: 30%;">{{ attribute.attribute_key_id }}</td>
+                                        <td>{{ attribute.attribute_value_id.attribute_value }}</td>
                                     </tr>
-                                    <tr>
-                                        <td class="bg-100" style="width: 30%;">Memory</td>
-                                        <td>8GB of 2133MHz LPDDR3 onboard memory</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="bg-100" style="width: 30%;">Brand Name</td>
-                                        <td>Apple</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="bg-100" style="width: 30%;">Model</td>
-                                        <td>Mac Book Pro</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="bg-100" style="width: 30%;">Display</td>
-                                        <td>13.3-inch (diagonal) LED-backlit display with IPS technology</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="bg-100" style="width: 30%;">Storage</td>
-                                        <td>512GB SSD</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="bg-100" style="width: 30%;">Graphics</td>
-                                        <td>Intel Iris Plus Graphics 655</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="bg-100" style="width: 30%;">Weight</td>
-                                        <td>7.15 pounds</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="bg-100" style="width: 30%;">Finish</td>
-                                        <td>Silver, Space Gray</td>
-                                    </tr>
+                                    {% endfor %}
+
                                     </tbody>
                                 </table>
                             </div>
