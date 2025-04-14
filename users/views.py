@@ -235,6 +235,3 @@ def home(request):
         pass
     else:
         return render(request, "app/index.html")
-
-
-

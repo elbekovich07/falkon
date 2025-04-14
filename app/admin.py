@@ -2,8 +2,8 @@ import csv
 import json
 
 from django.contrib import admin
-from django.db.models.fields.files import FileField
 from django.http import HttpResponse
+from djangoql.admin import DjangoQLSearchMixin
 
 from app.models import Category, Product, Images, Attribute, AttributeValue, ProductAttribute
 from users.models import Customer
@@ -21,12 +21,12 @@ admin.site.register(ProductAttribute)
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     list_display = ('id', 'title')
     prepopulated_fields = {"slug": ("title",)}
 
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     list_display = ('id', 'name', 'price', 'slug', 'category')
     prepopulated_fields = {"slug": ("name",)}
 
@@ -78,6 +78,6 @@ class ExportJsonMixin:
 
 
 @admin.register(Customer)
-class CustomerAdmin(ExportCsvMixin, ExportJsonMixin, admin.ModelAdmin):
+class CustomerAdmin(ExportCsvMixin, ExportJsonMixin, DjangoQLSearchMixin, admin.ModelAdmin):
     list_display = ('id', 'name', 'email', 'phone', 'VAT_Number')
     actions = ['export_as_csv', 'export_as_json']

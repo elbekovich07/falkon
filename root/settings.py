@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'adminsortable2',
     'users.apps.UsersConfig',
     'social_django',
+    'djangoql'
 ]
 
 
