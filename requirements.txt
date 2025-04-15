@@ -13,9 +13,11 @@ django-jazzmin==3.0.1
 django-phonenumber-field==8.0.0
 djangoql==0.17.1
 et_xmlfile==2.0.0
+gunicorn==23.0.0
 idna==3.10
 oauthlib==3.2.2
 openpyxl==3.1.5
+packaging==24.2
 phonenumbers==9.0.1
 pillow==11.1.0
 ply==3.11
