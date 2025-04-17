@@ -1,1 +1,1 @@
-web: gunicorn falkon.wsgi
+web: gunicorn project.wsgi
