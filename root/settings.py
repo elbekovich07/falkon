@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'adminsortable2',
     'users.apps.UsersConfig',
     'social_django',
-    'djangoql'
+    'djangoql',
+    'rest_framework'
 ]
 
 
@@ -195,3 +196,11 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+}
